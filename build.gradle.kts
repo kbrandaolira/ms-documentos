@@ -28,6 +28,8 @@ dependencies {
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
 	implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
 	implementation("com.google.code.gson:gson:2.7")
+	implementation("com.squareup.okhttp3:okhttp:4.9.0")
+	implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.0.1")
 	compileOnly("org.projectlombok:lombok")
 	runtimeOnly("org.postgresql:postgresql")
 	annotationProcessor("org.projectlombok:lombok")
