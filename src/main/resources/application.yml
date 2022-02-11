@@ -1,0 +1,34 @@
+server:
+  port: 8091
+
+spring:
+  application.name: ms-documentos
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: update
+  devtools:
+    restart:
+      enabled: true
+    livereload:
+      enabled: false
+  datasource:
+    hikari:
+      connectionTestQuery: SELECT 1
+      minIdle: 1
+      maxPoolSize: 10
+      idleTimeout: 60000
+      poolName: pool
+      schema: documentos
+    driverClassName: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5435/postgres #jdbc:postgresql://db-postgres-boasaude:5432/postgres
+    username: postgres
+    password: 123
+  kafka:
+    consumer:
+      bootstrap-servers: localhost:19093
+      group-id: MS_DOCUMENTOS
+      auto-offset-reset: latest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      max-poll-records: 1

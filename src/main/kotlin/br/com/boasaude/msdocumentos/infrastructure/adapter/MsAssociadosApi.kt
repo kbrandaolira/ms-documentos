@@ -14,10 +14,10 @@ class MsAssociadosApi(
 
     fun getAssociateIdByDocumentNumber(documentNumber: String): Long? {
         return restApi.get("$baseUrl/associate/$documentNumber")?.let { response ->
-            response?.takeIf { it.isNotBlank() }?.let {
+            response.takeIf { it.isNotBlank() }?.let {
                 Json { ignoreUnknownKeys = true }.decodeFromString<Long>(it)
             }
-        } ?: null
+        }
     }
 
 }
