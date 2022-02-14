@@ -15,7 +15,7 @@ data class MedicalExamDTO(
     fun toDocument(): Document {
         return Document(
             type = DocumentType.MEDICAL_EXAM,
-            observation = this.doctorName,
+            observation = "Realizado por ${this.doctorName}. Observações: ${this.observation}.",
             realizationDate = this.date.toLocalDateTime(),
             url = this.documentUrl
         )

@@ -1,0 +1,81 @@
+version: '3.6'
+
+x-zookeeper: &default-zookeeper
+  image: confluentinc/cp-zookeeper:5.3.3
+  restart: on-failure
+  deploy:
+    resources:
+      limits:
+        memory: 128M
+      reservations:
+        memory: 128M
+
+x-kafka: &default-kafka
+  image: confluentinc/cp-kafka:5.3.3
+  restart: unless-stopped
+  links:
+    - zk-boasaude
+  deploy:
+    resources:
+      limits:
+        memory: 512M
+      reservations:
+        memory: 300M
+
+services:
+  zk-boasaude:
+    <<: *default-zookeeper
+    container_name: zookeeper-boasaude
+    ports:
+      - "22182:22182"
+    environment:
+      JVMFLAGS: "-Xmx128m"
+      HEAP_OPTS: "-Xms128M -Xmx128m"
+      ZOOKEEPER_SERVER_ID: 1
+      ZOOKEEPER_CLIENT_PORT: 22182
+      ZOOKEEPER_TICK_TIME: 2000
+      ZOOKEEPER_INIT_LIMIT: 5
+      ZOOKEEPER_SYNC_LIMIT: 2
+      ZOOKEEPER_SERVERS: zk-boasaude:22888:23888
+    healthcheck:
+      test: [ "CMD", "echo", "ruok", "|", "nc", "zk1", "22182" ]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  kafka-boasaude:
+    <<: *default-kafka
+    container_name: kafka-boasaude
+    ports:
+      - "19093:19093"
+    environment:
+      KAFKA_HEAP_OPTS: "-Xms256m -Xmx256m"
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zk-boasaude:22182
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka-boasaude:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
+    healthcheck:
+      test: [ "CMD", "kafka-topics","--zookeeper","zk-boausade:22182","--list" ]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+
+  akhq-boasaude:
+    image: tchiotludo/akhq:latest
+    hostname: akhq
+    container_name: akhq-boasaude
+    ports:
+      - "9090:8080"
+    environment:
+      AKHQ_CONFIGURATION: |
+        akhq:
+          connections:
+            docker-kafka-server:
+              properties:
+                bootstrap.servers: "kafka-boasaude:9092"
+              connect:
+                - name: "connect"
+                  url: "http://connect:8083"
