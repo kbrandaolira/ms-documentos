@@ -14,7 +14,7 @@ x-kafka: &default-kafka
   image: confluentinc/cp-kafka:5.3.3
   restart: unless-stopped
   links:
-    - zk-boasaude
+    - zkboasaude1
   deploy:
     resources:
       limits:
@@ -23,9 +23,9 @@ x-kafka: &default-kafka
         memory: 300M
 
 services:
-  zk-boasaude:
+  zkboasaude1:
     <<: *default-zookeeper
-    container_name: zookeeper-boasaude
+    container_name: zookeeper_boasaude1
     ports:
       - "22182:22182"
     environment:
@@ -36,37 +36,37 @@ services:
       ZOOKEEPER_TICK_TIME: 2000
       ZOOKEEPER_INIT_LIMIT: 5
       ZOOKEEPER_SYNC_LIMIT: 2
-      ZOOKEEPER_SERVERS: zk-boasaude:22888:23888
+      ZOOKEEPER_SERVERS: zkboasaude1:22888:23888
     healthcheck:
       test: [ "CMD", "echo", "ruok", "|", "nc", "zk1", "22182" ]
       interval: 10s
       timeout: 5s
       retries: 10
 
-  kafka-boasaude:
+  kafka-boasaude1:
     <<: *default-kafka
-    container_name: kafka-boasaude
+    container_name: kafka_boasaude1
     ports:
       - "19093:19093"
     environment:
       KAFKA_HEAP_OPTS: "-Xms256m -Xmx256m"
       KAFKA_BROKER_ID: 1
-      KAFKA_ZOOKEEPER_CONNECT: zk-boasaude:22182
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka-boasaude:9092
+      KAFKA_ZOOKEEPER_CONNECT: zkboasaude1:22182
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka-boasaude1:9092,PLAINTEXT_HOST://kafka-boasaude1:19093
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
       KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
       KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
     healthcheck:
-      test: [ "CMD", "kafka-topics","--zookeeper","zk-boausade:22182","--list" ]
+      test: [ "CMD", "kafka-topics","--zookeeper","zkboasaude1:22182","--list" ]
       interval: 10s
       timeout: 5s
       retries: 10
       start_period: 20s
 
-  akhq-boasaude:
+  akhq:
     image: tchiotludo/akhq:latest
     hostname: akhq
-    container_name: akhq-boasaude
+    container_name: akhq
     ports:
       - "9090:8080"
     environment:
@@ -75,7 +75,7 @@ services:
           connections:
             docker-kafka-server:
               properties:
-                bootstrap.servers: "kafka-boasaude:9092"
+                bootstrap.servers: "kafka-boasaude1:9092"
               connect:
                 - name: "connect"
                   url: "http://connect:8083"
