@@ -1,0 +1,14 @@
+FROM adoptopenjdk/openjdk11:alpine as builder
+RUN apk update && \
+    apk add bash curl --no-cache
+WORKDIR /app/ms-documentos
+COPY . .
+ENV LANG en_US.utf8
+VOLUME /tmp
+VOLUME /app/logs
+VOLUME /app/config
+RUN ls -la /app/ms-documentos
+RUN chmod +x /app/ms-documentos/dev-docker-entrypoint.sh
+RUN ls -la /app/ms-documentos
+EXPOSE 8091
+ENTRYPOINT ["/app/ms-documentos/dev-docker-entrypoint.sh"]

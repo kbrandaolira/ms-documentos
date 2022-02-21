@@ -23,7 +23,24 @@ x-kafka: &default-kafka
         memory: 300M
 
 services:
+  ms-documentos:
+    networks:
+      - ms-associados_pucmg-network
+    container_name: ms-documentos
+    build:
+      context: ./
+      dockerfile: Dockerfile.dev
+    image: "m4ucorp/ms-documentos:dev"
+    restart: on-failure
+    ports:
+      - 8091:8091
+    depends_on:
+      - zkboasaude1
+      - kafka-boasaude1
+      - akhq-boasaude
   zkboasaude1:
+    networks:
+      - ms-associados_pucmg-network
     <<: *default-zookeeper
     container_name: zookeeper_boasaude1
     ports:
@@ -44,6 +61,8 @@ services:
       retries: 10
 
   kafka-boasaude1:
+    networks:
+      - ms-associados_pucmg-network
     <<: *default-kafka
     container_name: kafka_boasaude1
     ports:
@@ -63,10 +82,12 @@ services:
       retries: 10
       start_period: 20s
 
-  akhq:
+  akhq-boasaude:
+    networks:
+      - ms-associados_pucmg-network
     image: tchiotludo/akhq:latest
     hostname: akhq
-    container_name: akhq
+    container_name: akhq-boasaude
     ports:
       - "9090:8080"
     environment:
@@ -79,3 +100,7 @@ services:
               connect:
                 - name: "connect"
                   url: "http://connect:8083"
+
+networks:
+  ms-associados_pucmg-network:
+    external: true
