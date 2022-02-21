@@ -14,6 +14,7 @@ class DocumentRepositoryAdapter(private val documentJpa: DocumentJpa) : Document
 
     override fun save(document: Document): Long? {
         return try {
+            logger.info("Trying to save document $document.")
             this.documentJpa.save(DocumentEntity.fromDomain(document)).id
         } catch (e: Exception){
             logger.error("Error when tried to save document ${document.url}: $e")
