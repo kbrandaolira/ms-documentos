@@ -24,7 +24,7 @@ class MedicalExamHandler(
     ): List<MedicalExamDTO> {
         val dtos = mutableListOf<MedicalExamDTO>()
         this.documentRepository.findByTypeAndReferenceEntityAndReferenceIdOrderByRealizationDateDesc(
-            DocumentType.valueOf(documentType),
+            documentType,
             referenceType,
             referenceId
         ).forEach {
