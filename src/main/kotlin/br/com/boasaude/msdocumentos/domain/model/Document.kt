@@ -4,7 +4,9 @@ import java.time.LocalDateTime
 
 data class Document (
     val id: Long? = null,
+    val name: String,
     val type: DocumentType,
+    val responsible: String,
     val observation: String,
     var referenceId: Long? = null,
     var referenceEntity: ReferenceEntity? = null,

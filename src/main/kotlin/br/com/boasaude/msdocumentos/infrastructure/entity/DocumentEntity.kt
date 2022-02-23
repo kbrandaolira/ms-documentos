@@ -13,6 +13,8 @@ class DocumentEntity(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null,
+    val name: String,
+    val responsible: String,
     @Enumerated(EnumType.STRING)
     val type: DocumentType,
     val observation: String,
@@ -29,6 +31,8 @@ class DocumentEntity(
     companion object {
         fun fromDomain(document: Document) = DocumentEntity(
             id = document.id,
+            name = document.name,
+            responsible = document.responsible,
             type = document.type,
             observation = document.observation,
             referenceId = document.referenceId,
@@ -37,6 +41,22 @@ class DocumentEntity(
             realizationDate = document.realizationDate,
             createdAt = document.createdAt,
             createdBy = document.createdBy
+        )
+    }
+
+    fun toDocument(): Document {
+        return Document(
+            id = this.id,
+            name = this.name,
+            type = this.type,
+            responsible = this.responsible,
+            observation = this.observation,
+            referenceId = this.referenceId,
+            referenceEntity = this.referenceEntity,
+            url = this.url,
+            realizationDate = this.realizationDate,
+            createdAt = this.createdAt,
+            createdBy = this.createdBy
         )
     }
 }
