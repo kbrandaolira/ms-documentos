@@ -19,13 +19,13 @@ class MedicalExamHandler(
 
     fun search(
         documentType: String,
-        referenceType: String,
+        referenceEntity: String,
         referenceId: Long
     ): List<MedicalExamDTO> {
         val dtos = mutableListOf<MedicalExamDTO>()
         this.documentRepository.findByTypeAndReferenceEntityAndReferenceIdOrderByRealizationDateDesc(
             documentType,
-            referenceType,
+            referenceEntity,
             referenceId
         ).forEach {
             dtos.add(MedicalExamDTO.fromDocument(it))

@@ -15,14 +15,13 @@ class DocumentController(private val medicalExamHandler: MedicalExamHandler) {
 
     private val logger: Logger = LoggerFactory.getLogger(DocumentController::class.java)
 
-    @GetMapping("/{documentType}/from/{referenceType}/{referenceId}/")
+    @GetMapping("/{documentType}/from/{referenceEntity}/{referenceId}/")
     fun search(
         @PathVariable documentType: String,
-        @PathVariable referenceType: String,
+        @PathVariable referenceEntity: String,
         @PathVariable referenceId: Long
     ): List<MedicalExamDTO> {
-        logger.info("Searching documents by $documentType, $referenceType and $referenceId.")
-        return this.medicalExamHandler.search(documentType, referenceType, referenceId)
+        logger.info("Searching documents by $documentType, $referenceEntity and $referenceId.")
+        return this.medicalExamHandler.search(documentType, referenceEntity, referenceId)
     }
-
 }
