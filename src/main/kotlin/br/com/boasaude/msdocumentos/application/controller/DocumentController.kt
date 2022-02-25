@@ -15,7 +15,7 @@ class DocumentController(private val medicalExamHandler: MedicalExamHandler) {
 
     private val logger: Logger = LoggerFactory.getLogger(DocumentController::class.java)
 
-    @GetMapping("/{documentType}/from/{referenceEntity}/{referenceId}/")
+    @GetMapping("/{documentType}/from/{referenceEntity}/{referenceId}")
     fun search(
         @PathVariable documentType: String,
         @PathVariable referenceEntity: String,
